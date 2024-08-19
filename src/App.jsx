@@ -12,6 +12,10 @@ function App() {
   const [answer, setAnswer] = useState("");
   const [answerArray, setAnswerArray] = useState([]);
   const [keywords, setKeywords] = useState([]);
+  const [resultQuestion, setResultQuestion] = useState(false);
+  const [wrong, setWrong] = useState(false);
+
+
 
 
 
@@ -35,10 +39,15 @@ function App() {
     if (keywords.length == answer.length) {
 
       if (answer == keywords.join("")) {
-        alert('Cevap Doğru');
+        setIndex(index + 1);
+
+        setKeywords([]);
+        setResultQuestion(true);
+
       }
       else {
-        alert('Cevap Yanlış');
+
+        setWrong(true);
       }
 
     }
@@ -51,20 +60,38 @@ function App() {
 
 
   useEffect(() => {
-    const answer = DATA[index].answer.toLowerCase();
-    setAnswer(answer);
 
-    setQuestion(DATA[index].question);
+    setWrong(false);
 
-    const stringToArray = answer.split("");
-    stringToArray.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
-    stringToArray.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
-    stringToArray.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
 
-    const alphabetLowerData = stringToArray.map((answer) => answer.toLowerCase());
+    setResultQuestion(false);
 
-    setAnswerArray(shuffle(alphabetLowerData));
-  }, []);
+    setAnswer("answer");
+
+    if (typeof DATA[index] != undefined) {
+
+
+
+
+
+      const answer = DATA[index].answer.toLowerCase();
+      setAnswer(answer);
+
+      setQuestion(DATA[index].question);
+
+      const stringToArray = answer.split("");
+      stringToArray.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
+      stringToArray.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
+      stringToArray.push(alphabet[Math.floor(Math.random() * alphabet.length)]);
+
+      const alphabetLowerData = stringToArray.map((answer) => answer.toLowerCase());
+
+      setAnswerArray(shuffle(alphabetLowerData));
+    }
+  }, [resultQuestion]);
+
+
+
 
   const removeKeyword = (index) => {
 
@@ -79,17 +106,19 @@ function App() {
 
     <div className="App" >
       <div>
-        <span> {question} </span>
+        <span className={"question-name"} > {question} </span>
+
+
 
       </div>
 
 
 
 
-      <div>
+      <div className={"question-area"} >
 
         {keywords.map((item, index) => (
-          <span onClick={() => removeKeyword(index)} key={index}>
+          <span style={{ 'border-bottom': (wrong) ? '3px solid red' : '3px solid #ddd' }} className={"question"} onClick={() => removeKeyword(index)} key={index}>
 
             {item}
 
@@ -98,20 +127,22 @@ function App() {
 
       </div>
 
-
-      {answerArray.map((item, index) => (
-        <button key={index} onClick={() => setKeyword(item)} >
-          {item}
-        </button>
+      <div className={"button-area"}>
 
 
-      ))
-      }
+        {answerArray.map((item, index) => (
+          <button className={"button"} key={index} onClick={() => setKeyword(item)} >
+            {item}
+          </button>
 
+
+        ))
+        }
+
+
+      </div>
 
     </div>
-
-
 
 
   );
